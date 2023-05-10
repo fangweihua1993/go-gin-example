@@ -12,6 +12,12 @@ type App struct {
 	PageSize  int
 	PrefixUrl string
 
+	CaptchaNumber    int
+	CaptchaImgWidth  int
+	CaptchaImgHeight int
+	CaptchaOpen      int
+	CaptchaTimeout   int
+
 	RuntimeRootPath string
 
 	ImageSavePath  string

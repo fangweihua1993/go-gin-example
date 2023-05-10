@@ -1,24 +1,31 @@
 package routers
 
 import (
-	"net/http"
-
+	"github.com/EDDYCJY/go-gin-example/controller"
+	"github.com/EDDYCJY/go-gin-example/middleware/jwt"
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/EDDYCJY/go-gin-example/docs"
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
-
-	"github.com/EDDYCJY/go-gin-example/middleware/jwt"
-	"github.com/EDDYCJY/go-gin-example/pkg/export"
-	"github.com/EDDYCJY/go-gin-example/pkg/qrcode"
-	"github.com/EDDYCJY/go-gin-example/pkg/upload"
-	"github.com/EDDYCJY/go-gin-example/routers/api"
-	"github.com/EDDYCJY/go-gin-example/routers/api/v1"
 )
 
 // InitRouter initialize routing information
 func InitRouter() *gin.Engine {
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+
+	apiv1 := r.Group("/api/v1")
+	apiv1.POST("/login", controller.Login)
+	apiv1.POST("/captcha", controller.Captcha)
+
+	apiv2 := r.Group("/api/v1")
+	apiv2.Use(jwt.JWT())
+	apiv2.POST("/testAuth", controller.TestAuth)
+
+	return r
+}
+
+/*func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -62,4 +69,4 @@ func InitRouter() *gin.Engine {
 	}
 
 	return r
-}
+}*/
