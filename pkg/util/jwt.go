@@ -1,6 +1,7 @@
 package util
 
 import (
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -14,10 +15,13 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+type MapClaim map[string]interface{}
+
 // GenerateToken generate tokens used for auth
 func GenerateToken(username, password string) (string, error) {
 	nowTime := time.Now()
-	expireTime := nowTime.Add(3 * time.Hour)
+	// 过期时间从配置拿
+	expireTime := nowTime.Add(time.Duration(setting.AppSetting.JwtExpireTime) * time.Hour)
 
 	claims := Claims{
 		EncodeMD5(username),

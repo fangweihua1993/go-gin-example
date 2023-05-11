@@ -11,6 +11,9 @@ import (
 )
 
 func TestAuth(c *gin.Context) {
-
-	utils.OkWithDetailed("dsd", "", c)
+	userName, isExist := c.Get("_username")
+	if !isExist {
+		userName = "not exist"
+	}
+	utils.OkWithDetailed(userName, "", c)
 }

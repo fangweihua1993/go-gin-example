@@ -18,6 +18,7 @@ import (
 	"github.com/EDDYCJY/go-gin-example/pkg/util"
 	"github.com/EDDYCJY/go-gin-example/utils"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 func Login(c *gin.Context, req request.Login) (*response.Login, error) {
@@ -41,7 +42,7 @@ func Login(c *gin.Context, req request.Login) (*response.Login, error) {
 		userLogin := entity.SysUser{
 			Username: req.Username,
 		}
-		userInfo, err := models.Login(&userLogin)
+		userInfo, err := models.GetInfoByName(&userLogin)
 		if err != nil || userInfo == nil {
 			return nil, errs.UserNotFound
 		}
@@ -61,4 +62,41 @@ func Login(c *gin.Context, req request.Login) (*response.Login, error) {
 	}
 
 	return &ret, errs.CaptchaCheckError
+}
+
+func GetUserList(req request.UserList) ([]*entity.SysUser, error) {
+	return models.List(req)
+}
+
+func UpdateEnable(req request.UpdateEnable) bool {
+	return models.SetEnable(req.Id, req.Enable)
+}
+
+func Update(req request.Update) (bool, error) {
+	_, err := models.Update(req)
+	if err != nil {
+		return false, errs.MysqlUpdateError
+	}
+
+	return true, nil
+}
+
+func Create(req request.Create) (bool, error) {
+	req.Password = utils.BcryptHash(req.Password)
+	req.UUID = uuid.NewV4()
+	err := models.Create(req)
+	if err != nil {
+		return false, errs.MysqlCreateError
+	}
+
+	return true, nil
+}
+
+func Delete(req request.Delete) (bool, error) {
+	err := models.Delete(req.Id)
+	if err != nil {
+		return false, errs.MysqlDeleteError
+	}
+
+	return true, nil
 }

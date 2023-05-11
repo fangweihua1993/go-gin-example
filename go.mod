@@ -13,16 +13,16 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v2.0.1-0.20180401191855-9352ab68be13+incompatible
 	github.com/jinzhu/gorm v0.0.0-20180213101209-6e1387b44c64
+	github.com/mitchellh/mapstructure v1.5.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/swaggo/swag v1.5.1
 	github.com/tealeg/xlsx v1.0.4-0.20180419195153-f36fa3be8893
 	github.com/unknwon/com v1.0.1
-	go.uber.org/zap v1.24.0
 )
 
 require (
 	github.com/kr/pretty v0.1.0 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
+	github.com/stretchr/testify v1.8.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 

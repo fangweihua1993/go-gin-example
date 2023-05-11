@@ -15,3 +15,8 @@ var CaptchaCheckError = utils.NewCustomError(11002, "验证码验证失败")
 
 var SystemError = utils.NewCustomError(500, "系统错误")
 var ParamError = utils.NewCustomError(1, "参数错误")
+
+var MysqlSelectError = utils.NewCustomError(100, "查询失败")
+var MysqlUpdateError = utils.NewCustomError(101, "更新失败")
+var MysqlCreateError = utils.NewCustomError(102, "创建失败")
+var MysqlDeleteError = utils.NewCustomError(103, "删除失败")

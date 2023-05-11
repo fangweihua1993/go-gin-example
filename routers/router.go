@@ -14,13 +14,21 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	apiv1 := r.Group("/api/v1")
-	apiv1.POST("/login", controller.Login)
-	apiv1.POST("/captcha", controller.Captcha)
+	noAuthAPI := r.Group("/api/v1")
+	noAuthAPI.POST("/login", controller.Login)
+	noAuthAPI.POST("/captcha", controller.Captcha)
 
-	apiv2 := r.Group("/api/v1")
-	apiv2.Use(jwt.JWT())
-	apiv2.POST("/testAuth", controller.TestAuth)
+	authApi := r.Group("/api/v1")
+	// 使用jwt鉴权
+	authApi.Use(jwt.JWT())
+	{
+		authApi.POST("/testAuth", controller.TestAuth)
+		authApi.POST("/getUserList", controller.GetUserList)
+		authApi.POST("/setUserEnable", controller.UpdateEnable)
+		authApi.POST("/userUpdate", controller.Update)
+		authApi.POST("/userCreate", controller.Create)
+		authApi.POST("/userDelete", controller.Delete)
+	}
 
 	return r
 }
