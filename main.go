@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/EDDYCJY/go-gin-example/task"
 	"log"
 	"net/http"
 
@@ -11,8 +12,8 @@ import (
 	"github.com/EDDYCJY/go-gin-example/pkg/gredis"
 	"github.com/EDDYCJY/go-gin-example/pkg/logging"
 	"github.com/EDDYCJY/go-gin-example/pkg/setting"
-	"github.com/EDDYCJY/go-gin-example/routers"
 	"github.com/EDDYCJY/go-gin-example/pkg/util"
+	"github.com/EDDYCJY/go-gin-example/routers"
 )
 
 func init() {
@@ -48,6 +49,8 @@ func main() {
 
 	log.Printf("[info] start http server listening %s", endPoint)
 
+	initTask()
+
 	server.ListenAndServe()
 
 	// If you want Graceful Restart, you need a Unix system and download github.com/fvbock/endless
@@ -63,4 +66,9 @@ func main() {
 	//if err != nil {
 	//	log.Printf("Server err: %v", err)
 	//}
+}
+
+func initTask() {
+	task := new(task.UserListTask)
+	go task.UserListTimer()
 }
