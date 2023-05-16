@@ -42,6 +42,12 @@ IdleTimeout = 200
 ...
 ```
 
+### BUILD
+```
+$  go build -o server main.go
+$  ./server 
+```
+
 ### Run
 ```
 $ cd $GOPATH/src/go-gin-example

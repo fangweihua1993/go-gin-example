@@ -25,7 +25,7 @@ func (u *UserListTask) UserListTimer() {
 	c := cron.New()
 	c.AddFunc("*/5 * * * *", func() {
 		c.Stop()
-		time.Sleep(100 * time.Duration(time.Second))
+		time.Sleep(10 * time.Duration(time.Second))
 		var req request.UserList
 		u.userService.GetUserList(req)
 		c.Start()
