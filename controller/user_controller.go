@@ -12,14 +12,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Login(c *gin.Context) {
+type UserController struct {
+	userService service.UserService
+}
+
+func (u *UserController) Login(c *gin.Context) {
 	var req request.Login
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret, err := service.Login(c, req)
+	ret, err := u.userService.Login(c, req)
 	if err != nil {
 		utils.FailWithDetailed(nil, err.Error(), c)
 		return
@@ -28,14 +32,14 @@ func Login(c *gin.Context) {
 	utils.OkWithDetailed(ret, "", c)
 }
 
-func GetUserList(c *gin.Context) {
+func (u *UserController) GetUserList(c *gin.Context) {
 	var req request.UserList
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret, err := service.GetUserList(req)
+	ret, err := u.userService.GetUserList(req)
 	if err != nil {
 		utils.FailWithDetailed(nil, err.Error(), c)
 		return
@@ -44,26 +48,26 @@ func GetUserList(c *gin.Context) {
 	utils.OkWithDetailed(ret, "", c)
 }
 
-func UpdateEnable(c *gin.Context) {
+func (u *UserController) UpdateEnable(c *gin.Context) {
 	var req request.UpdateEnable
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret := service.UpdateEnable(req)
+	ret := u.userService.UpdateEnable(req)
 
 	utils.OkWithDetailed(ret, "", c)
 }
 
-func Update(c *gin.Context) {
+func (u *UserController) Update(c *gin.Context) {
 	var req request.Update
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret, err := service.Update(req)
+	ret, err := u.userService.Update(req)
 	if err != nil {
 		utils.FailWithDetailed(nil, err.Error(), c)
 		return
@@ -72,14 +76,14 @@ func Update(c *gin.Context) {
 	utils.OkWithDetailed(ret, "", c)
 }
 
-func Create(c *gin.Context) {
+func (u *UserController) Create(c *gin.Context) {
 	var req request.Create
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret, err := service.Create(req)
+	ret, err := u.userService.Create(req)
 	if err != nil {
 		utils.FailWithDetailed(nil, err.Error(), c)
 		return
@@ -88,14 +92,14 @@ func Create(c *gin.Context) {
 	utils.OkWithDetailed(ret, "", c)
 }
 
-func Delete(c *gin.Context) {
+func (u *UserController) Delete(c *gin.Context) {
 	var req request.Delete
 	if err := c.ShouldBind(&req); err != nil {
 		utils.FailWithDetailed(nil, "参数错误", c)
 		return
 	}
 
-	ret, err := service.Delete(req)
+	ret, err := u.userService.Delete(req)
 	if err != nil {
 		utils.FailWithDetailed(nil, err.Error(), c)
 		return

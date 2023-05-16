@@ -21,7 +21,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-func Login(c *gin.Context, req request.Login) (*response.Login, error) {
+type UserService struct {
+	userModel models.SystemUser
+}
+
+func (u *UserService) Login(c *gin.Context, req request.Login) (*response.Login, error) {
 	var ret response.Login
 	// 判断验证码是否开启
 	key := c.ClientIP()
@@ -42,7 +46,7 @@ func Login(c *gin.Context, req request.Login) (*response.Login, error) {
 		userLogin := entity.SysUser{
 			Username: req.Username,
 		}
-		userInfo, err := models.GetInfoByName(&userLogin)
+		userInfo, err := u.userModel.GetInfoByName(&userLogin)
 		if err != nil || userInfo == nil {
 			return nil, errs.UserNotFound
 		}
@@ -64,16 +68,16 @@ func Login(c *gin.Context, req request.Login) (*response.Login, error) {
 	return &ret, errs.CaptchaCheckError
 }
 
-func GetUserList(req request.UserList) ([]*entity.SysUser, error) {
-	return models.List(req)
+func (u *UserService) GetUserList(req request.UserList) ([]*entity.SysUser, error) {
+	return u.userModel.List(req)
 }
 
-func UpdateEnable(req request.UpdateEnable) bool {
-	return models.SetEnable(req.Id, req.Enable)
+func (u *UserService) UpdateEnable(req request.UpdateEnable) bool {
+	return u.userModel.SetEnable(req.Id, req.Enable)
 }
 
-func Update(req request.Update) (bool, error) {
-	_, err := models.Update(req)
+func (u *UserService) Update(req request.Update) (bool, error) {
+	_, err := u.userModel.Update(req)
 	if err != nil {
 		return false, errs.MysqlUpdateError
 	}
@@ -81,10 +85,10 @@ func Update(req request.Update) (bool, error) {
 	return true, nil
 }
 
-func Create(req request.Create) (bool, error) {
+func (u *UserService) Create(req request.Create) (bool, error) {
 	req.Password = utils.BcryptHash(req.Password)
 	req.UUID = uuid.NewV4()
-	err := models.Create(req)
+	err := u.userModel.Create(req)
 	if err != nil {
 		return false, errs.MysqlCreateError
 	}
@@ -92,8 +96,8 @@ func Create(req request.Create) (bool, error) {
 	return true, nil
 }
 
-func Delete(req request.Delete) (bool, error) {
-	err := models.Delete(req.Id)
+func (u *UserService) Delete(req request.Delete) (bool, error) {
+	err := u.userModel.Delete(req.Id)
 	if err != nil {
 		return false, errs.MysqlDeleteError
 	}

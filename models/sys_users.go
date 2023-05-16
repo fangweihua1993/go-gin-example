@@ -15,12 +15,15 @@ import (
 	"strings"
 )
 
+type SystemUser struct {
+}
+
 // GetTableName
 //
 //  @Description:  获取数据表名称
 //  @return string
 //
-func GetTableName() string {
+func (su *SystemUser) GetTableName() string {
 	return entity.SysUser{}.TableName()
 }
 
@@ -31,7 +34,7 @@ func GetTableName() string {
 //  @return *entity.SysUser
 //  @return error
 //
-func GetInfoByName(u *entity.SysUser) (*entity.SysUser, error) {
+func (su *SystemUser) GetInfoByName(u *entity.SysUser) (*entity.SysUser, error) {
 	var userInfo entity.SysUser
 	err := db.Where("username = ?", u.Username).First(&userInfo).Error
 	if err != nil {
@@ -47,13 +50,13 @@ func GetInfoByName(u *entity.SysUser) (*entity.SysUser, error) {
 //  @return []*entity.SysUser
 //  @return error
 //
-func List(req request.UserList) ([]*entity.SysUser, error) {
+func (su *SystemUser) List(req request.UserList) ([]*entity.SysUser, error) {
 	var (
 		sql  strings.Builder
 		args []interface{}
 	)
 	rsp := make([]*entity.SysUser, 0)
-	table := GetTableName()
+	table := su.GetTableName()
 	sql.WriteString("SELECT * FROM " + table + " WHERE 1=1 ")
 	if req.Id != "" {
 		sql.WriteString(" AND `id` = ?")
@@ -87,8 +90,8 @@ func List(req request.UserList) ([]*entity.SysUser, error) {
 //  @param enable
 //  @return bool
 //
-func SetEnable(id string, enable int) bool {
-	table := GetTableName()
+func (su *SystemUser) SetEnable(id string, enable int) bool {
+	table := su.GetTableName()
 	err := db.Table(table).Where("id = ?", id).Update("enable", enable).Error
 	if err != nil {
 		return false
@@ -104,7 +107,7 @@ func SetEnable(id string, enable int) bool {
 //  @return int64
 //  @return error
 //
-func Update(req request.Update) (int64, error) {
+func (su *SystemUser) Update(req request.Update) (int64, error) {
 	var (
 		updateSql strings.Builder
 		args      []interface{}
@@ -114,7 +117,7 @@ func Update(req request.Update) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	table := GetTableName()
+	table := su.GetTableName()
 	updateSql.WriteString("UPDATE " + table + " SET ")
 	placeArgs := make([]string, 0, len(data))
 	for k, v := range data {
@@ -135,20 +138,20 @@ func Update(req request.Update) (int64, error) {
 //  @param req
 //  @return error
 //
-func Create(req request.Create) error {
+func (su *SystemUser) Create(req request.Create) error {
 	ret := entity.SysUser{}
 	err := xstruct.Decode(req, &ret, xstruct.WithTagName(constant.JsonTag))
 	if err != nil {
 		return err
 	}
 	ret.Password = req.Password
-	sql := fmt.Sprintf("INSERT INTO %s (`username`,`password`,`nick_name`,`side_mode`,`header_img`,`base_color`,`active_color`,`authority_id`,`phone`,`email`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)", GetTableName())
-	err = db.Table(GetTableName()).Raw(sql, ret.Username, ret.Password, ret.NickName, ret.SideMode, ret.HeaderImg, ret.BaseColor, ret.ActiveColor, ret.AuthorityId, ret.Phone, ret.Email).Create(&ret).Error
+	sql := fmt.Sprintf("INSERT INTO %s (`username`,`password`,`nick_name`,`side_mode`,`header_img`,`base_color`,`active_color`,`authority_id`,`phone`,`email`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)", su.GetTableName())
+	err = db.Table(su.GetTableName()).Raw(sql, ret.Username, ret.Password, ret.NickName, ret.SideMode, ret.HeaderImg, ret.BaseColor, ret.ActiveColor, ret.AuthorityId, ret.Phone, ret.Email).Create(&ret).Error
 	return err
 }
 
-func Delete(id string) error {
-	sql := "DELETE FROM " + GetTableName() + " WHERE `id` = ?"
+func (su *SystemUser) Delete(id string) error {
+	sql := "DELETE FROM " + su.GetTableName() + " WHERE `id` = ?"
 	effects := db.Exec(sql, id)
 	return effects.Error
 }
