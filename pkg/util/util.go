@@ -8,11 +8,16 @@ func Setup() {
 }
 
 func GetPageLimitInt(pageNo int, pageSize int) (int, int) {
+	pageNo, pageSize = GetPageAndSize(pageNo, pageSize)
+	return (pageNo - 1) * pageSize, pageSize
+}
+
+func GetPageAndSize(pageNo int, pageSize int) (int, int) {
 	if pageNo <= 0 {
 		pageNo = 1
 	}
 	if pageSize <= 0 || pageSize > 10000 {
 		pageSize = 20
 	}
-	return (pageNo - 1) * pageSize, pageSize
+	return pageNo, pageSize
 }

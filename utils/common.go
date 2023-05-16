@@ -18,7 +18,7 @@ type Response struct {
 
 const (
 	ERROR   = 7
-	SUCCESS = 0
+	SUCCESS = 1
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -43,6 +43,9 @@ func OkWithData(data interface{}, c *gin.Context) {
 }
 
 func OkWithDetailed(data interface{}, message string, c *gin.Context) {
+	if message == "" {
+		message = "成功"
+	}
 	Result(SUCCESS, data, message, c)
 }
 

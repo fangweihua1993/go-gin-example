@@ -150,8 +150,56 @@ func (su *SystemUser) Create(req request.Create) error {
 	return err
 }
 
+// Delete
+//
+//  @Description: 删除数据
+//  @receiver su
+//  @param id
+//  @return error
+//
 func (su *SystemUser) Delete(id string) error {
 	sql := "DELETE FROM " + su.GetTableName() + " WHERE `id` = ?"
 	effects := db.Exec(sql, id)
 	return effects.Error
+}
+
+// Count
+//
+//  @Description: 查询条目数
+//  @receiver su
+//  @param req
+//  @return int64
+//  @return error
+//
+func (su *SystemUser) Count(req request.UserList) (int64, error) {
+	var (
+		sql  strings.Builder
+		args []interface{}
+	)
+	var total int64
+	table := su.GetTableName()
+	sql.WriteString("SELECT count(*) FROM " + table + " WHERE 1=1 ")
+	if req.Id != "" {
+		sql.WriteString(" AND `id` = ?")
+		args = append(args, req.Id)
+	}
+	if req.Email != "" {
+		sql.WriteString(" AND `email` = ?")
+		args = append(args, req.Email)
+	}
+	if req.NickName != "" {
+		sql.WriteString(" AND `nick_name` like ?")
+		args = append(args, "%"+req.NickName+"%")
+	}
+
+	if len(req.Ids) > 0 {
+		sql.WriteString(" AND `id` IN (?)")
+		args = append(args, req.Ids)
+	}
+
+	err := db.Table(table).Raw(sql.String(), args...).Count(&total).Error
+	if err != nil {
+		return 0, err
+	}
+	return total, nil
 }

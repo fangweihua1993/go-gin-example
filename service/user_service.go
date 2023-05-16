@@ -68,8 +68,25 @@ func (u *UserService) Login(c *gin.Context, req request.Login) (*response.Login,
 	return &ret, errs.CaptchaCheckError
 }
 
-func (u *UserService) GetUserList(req request.UserList) ([]*entity.SysUser, error) {
-	return u.userModel.List(req)
+func (u *UserService) GetUserList(req request.UserList) (*response.ListData, error) {
+	var ret response.ListData
+	total, err := u.userModel.Count(req)
+	if err != nil {
+		return nil, errs.MysqlSelectError
+	}
+	if total > 0 {
+		list, err := u.userModel.List(req)
+		if err != nil {
+			return nil, errs.MysqlSelectError
+		}
+		ret.Count = len(list)
+		ret.List = list
+	}
+
+	ret.Total = total
+	ret.Page, ret.Limit = util.GetPageAndSize(req.Page, req.Limit)
+
+	return &ret, nil
 }
 
 func (u *UserService) UpdateEnable(req request.UpdateEnable) bool {
