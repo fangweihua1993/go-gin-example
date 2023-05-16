@@ -23,6 +23,7 @@ type UserListTask struct {
 //
 func (u *UserListTask) UserListTimer() {
 	c := cron.New()
+	// 每5s执行一次 执行中的停止定时 执行完继续定时 避免未执行完重复执行
 	c.AddFunc("*/5 * * * *", func() {
 		c.Stop()
 		time.Sleep(10 * time.Duration(time.Second))
